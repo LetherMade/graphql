@@ -1,0 +1,44 @@
+{
+  "name": "@lethermade/job-board",
+  "version": "0.1.0",
+  "description": "Course for learning QraphQL",
+  "scripts": {
+    "dev:install": "npm install && run-concurrently dev:install",
+    "dev:start": "run-concurrently dev:start"
+  },
+  "author": "Wesley Lether",
+  "license": "ISC",
+  "devDependencies": {
+    "@gnoesiboe/run-concurrently": "^3.0.3"
+  },
+  "concurrentTasks": {
+    "dev:install": {
+      "subTasks": [
+        {
+          "workingDirectory": "./server",
+          "command": "npm install",
+          "name": "server"
+        },
+        {
+          "workingDirectory": "./client",
+          "command": "npm install",
+          "name": "client"
+        }
+      ]
+    },
+    "dev:start": {
+      "subTasks": [
+        {
+          "workingDirectory": "./server",
+          "command": "npm run start",
+          "name": "server"
+        },
+        {
+          "workingDirectory": "./client",
+          "command": "npm run start",
+          "name": "client"
+        }
+      ]
+    }
+  }
+}
