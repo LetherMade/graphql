@@ -1,4 +1,4 @@
-import { getJob, getJobs, getJobsByCompany } from './db/jobs.js'
+import { createJob, getJob, getJobs, getJobsByCompany } from './db/jobs.js'
 import { getCompany } from './db/companies.js'
 import { GraphQLError } from 'graphql/error/index.js'
 
@@ -18,6 +18,13 @@ export const resolvers = {
                 throw notFoundError('No Company found with id: ' + id)
             }
             return company
+        },
+    },
+
+    Mutation: {
+        createJob: (_root, { input: { title, description } }) => {
+            const companyId = 'FjcJCHJALA4i' // todo change to authenticated user company
+            return createJob({ companyId, title, description })
         },
     },
 
