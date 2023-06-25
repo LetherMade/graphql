@@ -27,24 +27,24 @@ export async function createJob({ companyId, title, description }) {
     return job
 }
 
-export async function deleteJob(id) {
-    const job = await getJobTable().first().where({ id })
+export async function deleteJob(id, companyId) {
+    const job = await getJobTable().first().where({ id, companyId })
     if (!job) {
-        throw new Error(`Job not found: ${id}`)
+        return null
     }
     await getJobTable().delete().where({ id })
     return job
 }
 
-export async function updateJob({ id, title, description }) {
-    const job = await getJobTable().first().where({ id })
+export async function updateJob({ id, companyId, title, description }) {
+    const job = await getJobTable().first().where({ id, companyId })
     if (!job) {
-        throw new Error(`Job not found: ${id}`)
+        return null
     }
     const updatedFields = { title }
     if (description) {
         updatedFields.description = description
     }
-    await getJobTable().update(updatedFields).where({ id })
+    await getJobTable().update(updatedFields).where({ id, companyId })
     return { ...job, ...updatedFields }
 }
