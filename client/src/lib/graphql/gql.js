@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client'
+import { jobDetailFragment } from './fragments'
 
 export const jobsQuery = gql`
     query Jobs {
@@ -17,16 +18,10 @@ export const jobsQuery = gql`
 export const jobByIdQuery = gql`
     query JobById($id: ID!) {
         job(id: $id) {
-            id
-            date
-            title
-            company {
-                id
-                name
-            }
-            description
+            ...JobDetails
         }
     }
+    ${jobDetailFragment}
 `
 
 export const companyByIdQuery = gql`
@@ -42,4 +37,13 @@ export const companyByIdQuery = gql`
             }
         }
     }
+`
+
+export const createJobMutation = gql`
+    mutation CreateJob($input: CreateJobInput!) {
+        job: createJob(input: $input) {
+            ...JobDetails
+        }
+    }
+    ${jobDetailFragment}
 `

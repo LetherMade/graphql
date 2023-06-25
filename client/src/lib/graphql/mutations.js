@@ -6,7 +6,7 @@ import {
     createHttpLink,
     gql,
 } from '@apollo/client'
-import { jobByIdQuery } from './gql'
+import { createJobMutation, jobByIdQuery } from './gql'
 import { ApolloInMemorySingletonCache } from './cache'
 
 const httpLink = createHttpLink({ uri: 'http://localhost:9010/graphql' })
@@ -26,23 +26,8 @@ const apolloClient = new ApolloClient({
 })
 
 export async function createJob({ title, description }) {
-    const mutation = gql`
-        mutation CreateJob($input: CreateJobInput!) {
-            job: createJob(input: $input) {
-                id
-                date
-                title
-                company {
-                    id
-                    name
-                }
-                description
-            }
-        }
-    `
-
     const { data } = await apolloClient.mutate({
-        mutation,
+        mutation: createJobMutation,
         variables: { input: { title, description } },
         update: (cache, { data }) => {
             cache.writeQuery({
