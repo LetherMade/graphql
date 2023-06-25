@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { createJob } from '../lib/graphql/mutations'
+import { createJob } from '../lib/graphql/queries'
 
 function CreateJobPage() {
     const navigate = useNavigate()

@@ -1,19 +1,33 @@
-import { ApolloClient } from '@apollo/client'
-import { companyByIdQuery, jobByIdQuery, jobsQuery } from './gql'
-import { ApolloInMemorySingletonCache } from './cache'
+import {
+    ApolloClient,
+    ApolloLink,
+    concat,
+    createHttpLink,
+    InMemoryCache,
+} from '@apollo/client'
+import {
+    companyByIdQuery,
+    createJobMutation,
+    jobByIdQuery,
+    jobsQuery,
+} from './gql'
+import { getAccessToken } from '../auth'
 
-const apolloClient = new ApolloClient({
-    uri: 'http://localhost:9010/graphql',
-    cache: ApolloInMemorySingletonCache.getInstance(),
+const httpLink = createHttpLink({ uri: 'http://localhost:9010/graphql' })
+const authLink = new ApolloLink((operation, forward) => {
+    const accessToken = getAccessToken()
+    if (accessToken) {
+        operation.setContext({
+            headers: { Authorization: `Bearer ${accessToken}` },
+        })
+    }
+    return forward(operation)
 })
 
-export async function getJob(id) {
-    const { data } = await apolloClient.query({
-        query: jobByIdQuery,
-        variables: { id },
-    })
-    return data.job
-}
+export const apolloClient = new ApolloClient({
+    link: concat(authLink, httpLink),
+    cache: new InMemoryCache(),
+})
 
 export async function getJobs() {
     const { data } = await apolloClient.query({
@@ -23,10 +37,26 @@ export async function getJobs() {
     return data.jobs
 }
 
-export async function getCompany(id) {
+export async function getJob(id) {
     const { data } = await apolloClient.query({
-        query: companyByIdQuery,
+        query: jobByIdQuery,
         variables: { id },
     })
-    return data.company
+    return data.job
+}
+
+export async function createJob({ title, description }) {
+    const { data } = await apolloClient.mutate({
+        mutation: createJobMutation,
+        variables: { input: { title, description } },
+        update: (cache, { data }) => {
+            cache.writeQuery({
+                query: jobByIdQuery,
+                variables: { id: data.job.id },
+                data,
+            })
+        },
+    })
+
+    return data.job
 }
