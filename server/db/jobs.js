@@ -41,7 +41,10 @@ export async function updateJob({ id, title, description }) {
     if (!job) {
         throw new Error(`Job not found: ${id}`)
     }
-    const updatedFields = { title, description }
+    const updatedFields = { title }
+    if (description) {
+        updatedFields.description = description
+    }
     await getJobTable().update(updatedFields).where({ id })
     return { ...job, ...updatedFields }
 }
