@@ -3,6 +3,14 @@ import { ApolloClient, gql, InMemoryCache } from '@apollo/client'
 const apolloClient = new ApolloClient({
     uri: 'http://localhost:9010/graphql',
     cache: new InMemoryCache(),
+    // defaultOptions: {
+    //     query: {
+    //         fetchPolicy: 'network-only'
+    //     },
+    //     watchQuery: {
+    //         fetchPolicy: 'network-only'
+    //     }
+    // }
 })
 
 export async function getJob(id) {
@@ -40,7 +48,10 @@ export async function getJobs() {
         }
     `
 
-    const { data } = await apolloClient.query({ query })
+    const { data } = await apolloClient.query({
+        query,
+        fetchPolicy: 'network-only',
+    })
     return data.jobs
 }
 
