@@ -1,6 +1,9 @@
-import { GraphQLClient, gql } from 'graphql-request'
+import { ApolloClient, gql, InMemoryCache } from '@apollo/client'
 
-const client = new GraphQLClient('http://localhost:9010/graphql')
+const apolloClient = new ApolloClient({
+    uri: 'http://localhost:9010/graphql',
+    cache: new InMemoryCache(),
+})
 
 export async function getJob(id) {
     const query = gql`
@@ -18,8 +21,8 @@ export async function getJob(id) {
         }
     `
 
-    const { job } = await client.request(query, { id })
-    return job
+    const { data } = await apolloClient.query({ query, variables: { id } })
+    return data.job
 }
 
 export async function getJobs() {
@@ -37,8 +40,8 @@ export async function getJobs() {
         }
     `
 
-    const { jobs } = await client.request(query)
-    return jobs
+    const { data } = await apolloClient.query({ query })
+    return data.jobs
 }
 
 export async function getCompany(id) {
@@ -57,6 +60,6 @@ export async function getCompany(id) {
         }
     `
 
-    const { company } = await client.request(query, { id })
-    return company
+    const { data } = await apolloClient.query({ query, variables: { id } })
+    return data.company
 }
