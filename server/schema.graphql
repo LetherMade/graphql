@@ -1,6 +1,6 @@
 type Query {
     job(id: ID!): Job
-    jobs(limit: Int, offset: Int): [Job!]
+    jobs(limit: Int, offset: Int): JobsPagination
     company(id: ID!): Company
 }
 
@@ -24,6 +24,11 @@ type Job {
     title: String!
     company: Company!
     description: String
+}
+
+type JobsPagination {
+    items: [Job!]!
+    totalCount: Int!
 }
 
 input CreateJobInput {

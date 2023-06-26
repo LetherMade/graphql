@@ -4,7 +4,7 @@ import {
     createJobMutation,
     jobByIdQuery,
     jobsQuery,
-} from './gql'
+} from './queries'
 
 export const useCompany = (id) => {
     const { data, loading, error } = useQuery(companyByIdQuery, {
@@ -13,8 +13,12 @@ export const useCompany = (id) => {
     return { company: data?.company, loading, error: !!error }
 }
 
-export const useJobs = () => {
+export const useJobs = (limit, offset) => {
     const { data, loading, error } = useQuery(jobsQuery, {
+        variables: {
+            limit,
+            offset,
+        },
         fetchPolicy: 'network-only',
     })
     return { jobs: data?.jobs, loading, error: !!error }
