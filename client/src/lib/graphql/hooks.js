@@ -1,5 +1,10 @@
-import { useQuery } from '@apollo/client'
-import { companyByIdQuery, jobByIdQuery, jobsQuery } from './gql'
+import { useMutation, useQuery } from '@apollo/client'
+import {
+    companyByIdQuery,
+    createJobMutation,
+    jobByIdQuery,
+    jobsQuery,
+} from './gql'
 
 export const useCompany = (id) => {
     const { data, loading, error } = useQuery(companyByIdQuery, {
@@ -20,4 +25,31 @@ export const useJob = (id) => {
         variables: { id },
     })
     return { job: data?.job, loading, error: !!error }
+}
+
+export const useCreateJob = () => {
+    const [mutate, { error, loading }] = useMutation(createJobMutation)
+
+    const createJob = async (title, description) => {
+        const {
+            data: { job },
+        } = await mutate({
+            variables: { input: { title, description } },
+            update: (cache, { data }) => {
+                cache.writeQuery({
+                    query: jobByIdQuery,
+                    variables: { id: data.job.id },
+                    data,
+                })
+            },
+        })
+
+        return job
+    }
+
+    return {
+        createJob,
+        error: !!error,
+        loading,
+    }
 }

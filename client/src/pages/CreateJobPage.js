@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { createJob } from '../lib/graphql/queries'
+import { useCreateJob } from '../lib/graphql/hooks'
 
 function CreateJobPage() {
     const navigate = useNavigate()
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
+    const { createJob, loading } = useCreateJob()
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        const job = await createJob({ title, description })
-        navigate(`/jobs/${job.id}`)
+        const job = await createJob(title, description)
+        if (job) {
+            navigate(`/jobs/${job.id}`)
+        }
     }
 
     return (
@@ -49,6 +52,7 @@ function CreateJobPage() {
                             <button
                                 className="button is-link"
                                 onClick={handleSubmit}
+                                disabled={loading}
                             >
                                 Submit
                             </button>
