@@ -6,7 +6,7 @@ import {
     getJobsByCompany,
     updateJob,
 } from './db/jobs.js'
-import { companyLoader, getCompany } from './db/companies.js'
+import { getCompany } from './db/companies.js'
 import { GraphQLError } from 'graphql/error/index.js'
 
 export const resolvers = {
@@ -72,7 +72,8 @@ export const resolvers = {
 
     Job: {
         date: (job) => toIsoDate(job.createdAt),
-        company: (job) => companyLoader.load(job.companyId),
+        company: (job, _args, { companyLoader }) =>
+            companyLoader.load(job.companyId),
     },
 }
 
