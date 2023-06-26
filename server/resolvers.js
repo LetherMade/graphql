@@ -18,7 +18,7 @@ export const resolvers = {
             }
             return job
         },
-        jobs: () => getJobs(),
+        jobs: (_root, { limit, offset }) => getJobs(limit, offset),
         company: async (_root, { id }) => {
             const company = await getCompany(id)
             if (!company) {

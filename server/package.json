@@ -4,7 +4,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "refresh": "node scripts/create-db.js",
+    "refresh-50": "node scripts/insert-50-jobs.js"
   },
   "dependencies": {
     "@apollo/server": "^4.7.4",

@@ -3,8 +3,15 @@ import { generateId } from './ids.js'
 
 const getJobTable = () => connection.table('job')
 
-export function getJobs() {
-    return getJobTable().select()
+export function getJobs(limit, offset) {
+    const query = getJobTable().select().orderBy('createdAt', 'desc')
+    if (limit) {
+        query.limit(limit)
+    }
+    if (offset) {
+        query.offset(offset)
+    }
+    return query
 }
 
 export function getJobsByCompany(companyId) {
