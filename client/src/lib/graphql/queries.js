@@ -5,12 +5,7 @@ import {
     createHttpLink,
     InMemoryCache,
 } from '@apollo/client'
-import {
-    companyByIdQuery,
-    createJobMutation,
-    jobByIdQuery,
-    jobsQuery,
-} from './gql'
+import { createJobMutation, jobByIdQuery } from './gql'
 import { getAccessToken } from '../auth'
 
 const httpLink = createHttpLink({ uri: 'http://localhost:9010/graphql' })
@@ -28,22 +23,6 @@ export const apolloClient = new ApolloClient({
     link: concat(authLink, httpLink),
     cache: new InMemoryCache(),
 })
-
-export async function getJobs() {
-    const { data } = await apolloClient.query({
-        query: jobsQuery,
-        fetchPolicy: 'network-only',
-    })
-    return data.jobs
-}
-
-export async function getJob(id) {
-    const { data } = await apolloClient.query({
-        query: jobByIdQuery,
-        variables: { id },
-    })
-    return data.job
-}
 
 export async function createJob({ title, description }) {
     const { data } = await apolloClient.mutate({
